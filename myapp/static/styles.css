@@ -1,0 +1,208 @@
+/* Solo afecta los elementos dentro de .inicio-container */
+.inicio-container p {
+    font-family: 'Playfair Display', cursive;
+    font-weight: 400; /* ExtraLight es excelente para este efecto */
+    letter-spacing: 0.1em; /* Más espacio para un impacto visual fuerte */
+    font-size: 1.1em;
+    font-style: oblique;
+    color: #fff;
+}
+
+.inicio-container h1 {
+  font-family: 'Playfair Display', cursive;
+  letter-spacing:0.1em;
+  font-style: oblique;
+  font-size: 4em;
+  font-weight:700;
+  color: #fff;
+  
+}
+
+.inicio-container {
+    margin-bottom: 5cm;  /* Subirá el contenido 1cm */
+}
+
+
+
+.faq {
+    max-width: 900px;
+    margin: 10px auto;
+    background-color: rgba(246, 193, 168, 0.95);
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(143, 120, 120, 0.3);
+    max-width: 1200px;  /* o más si deseas */
+    width: 90%;         /* asegúrate de que no esté fijo a algo pequeño */
+    margin: auto;
+}
+
+details {
+    background-color: var(--faq-color, #f1f1f1);
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    position: relative;
+    font-size: 1.05rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+summary {
+    cursor: pointer;
+    font-weight: bold;
+    position: relative;
+    padding-right: 25px;
+}
+
+summary::marker {
+    content: ''; /* quita el triangulito */
+}
+
+summary::before {
+    content: '+';
+    color: #333;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 900;
+    font-size: 1.3rem;
+}
+
+details[open] summary::before {
+    content: '−'; /* signo menos real */
+}
+
+details[open] .content {
+    animation: aparecer 0.5s ease forwards;
+}
+
+.content {
+    padding-top: 10px;
+    font-size: 0.95rem;
+    color:rgb(44, 38, 35);
+    line-height: 1.5;
+}
+
+details b {
+    background-color: var(--dark-color, #ddd);
+    padding: 2px 6px;
+    color: #333;
+    border-radius: 3px;
+    margin-right: 6px;
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: 0 -20px;
+        border-top: 1px solid transparent;
+    }
+    50% {
+        border-top: 1px solid transparent;
+    }
+    to {
+        opacity: 1;
+        translate: 0 0;
+        border-top: 1px solid var(--bg-color);
+    }
+}
+
+
+@media screen and (min-width: 600px){
+    .faq {
+    max-width: clamp(300px, 70%, 700px);
+    }
+}
+
+
+
+.pantalla-completa {
+    background-image: url('/static/fondo.jpg');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+
+    width: 100vw;
+    height: 100vh; /* 100% del alto del viewport */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.fondo-faq {
+    background-color:rgb(238, 187, 162);
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    padding: 100px 20px;
+
+}
+
+
+
+
+
+.footer-personalizado {
+    background-color: #3b1f1f; /* cambia por el color que desees */
+    color: #f8f9fa;
+}
+
+.footer-personalizado a {
+    color: #f8f9fa;
+    text-decoration: none;
+}
+
+.footer-personalizado a:hover {
+    color: #ffcc00; /* color al pasar el mouse */
+}
+
+/* HEADER */
+.header-personalizado {
+    background-color: #541919; /* cambia por tu color personalizado */
+    color: white;
+}
+
+/* para el texto de los links en el navbar */
+.header-personalizado .nav-link {
+    color: white;
+}
+
+.header-personalizado .nav-link:hover {
+    color: #ffcc00; /* al pasar el mouse */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .registro-container {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .form-card {
+      background-color: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .form-card h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    form input,
+    form select,
+    form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-sizing: border-box;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 12px;
+      margin-top: 25px;
+      background-color: #ffc107;
+      border: none;
+      border-radius: 50px;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-submit:hover {
+      background-color: #e0a800;
+    }
+
+    .form-check {
+      margin-top: 10px;
+    }
+
+    .form-check input {
+      margin-right: 10px;
+    }
+
+    .politica {
+      font-size: 0.9em;
+      margin-top: 20px;
+    }
+
+    .alert {
+      color: red;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+
+  <div class="registro-container">
+    <div class="form-card">
+      <h2>Registro de Cliente</h2>
+
+      {% if error %}
+        <div class="alert">{{ error }}</div>
+      {% endif %}
+
+      <form method="POST">
+        {% csrf_token %}
+
+        <label for="id_username">Nombre de usuario:</label>
+        {{ form.username }}
+
+        <label for="id_password1">Contraseña:</label>
+        {{ form.password1 }}
+
+        <label for="id_password2">Confirmar contraseña:</label>
+        {{ form.password2 }}
+
+        <label for="id_nombre">Nombre completo:</label>
+        {{ form.nombre }}
+
+        <label for="id_email">Correo electrónico:</label>
+        {{ form.email }}
+
+        <label for="id_telefono">Teléfono:</label>
+        {{ form.telefono }}
+
+        <label for="id_direccion">Dirección:</label>
+        {{ form.direccion }}
+
+        <div class="politica">
+          <p>¿Acepta nuestra <a href="#">política de privacidad</a>?</p>
+          <label><input type="radio" name="privacidad" value="acepto" checked> ACEPTO</label><br>
+          <label><input type="radio" name="privacidad" value="noacepto"> NO ACEPTO</label>
+        </div>
+
+        <div class="form-check">
+          <label><input type="checkbox" name="sms"> Acepto recibir comunicaciones por SMS</label>
+        </div>
+
+        <div class="form-check">
+          <label><input type="checkbox" name="whatsapp"> Acepto recibir comunicaciones por WhatsApp</label>
+        </div>
+
+        <button type="submit" class="btn-submit">Continuar al registro</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

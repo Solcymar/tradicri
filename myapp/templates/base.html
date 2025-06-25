@@ -1,0 +1,145 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es-PE" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tradición Criolla</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{% static 'styles.css' %}">
+  <!-- Fuente Playfair Display desde Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet">
+
+
+  
+
+  <!-- Estilo personalizado para aplicar Playfair Display -->
+  <style>
+    body {
+      font-family: 'Playfair Display', serif;
+    }
+  </style>
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+
+  <!-- NAVBAR -->
+  <header class="header-personalizado">
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="/">Tradición Criolla</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a href="/" class="nav-link">Inicio</a>
+            </li>
+
+   
+
+
+
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Nosotros
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{% url 'quienes_somos' %}">¿Quiénes somos?</a></li>
+                <li><a class="dropdown-item" href="{% url 'faq' %}">Preguntas y respuestas</a></li>
+              </ul>
+            </li>
+
+
+
+
+
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Carta
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" href="{% url 'productos' %}">Productos</a></li>
+                <li><a class="dropdown-item" href="{% url 'platos_especiales' %}">Platos especiales</a></li>
+                <li><a class="dropdown-item" href="{% url 'combos' %}">Combos</a></li>
+              </ul>
+            </li>
+
+
+
+
+
+
+            <li class="nav-item">
+              <a href="{% url 'servicios' %}" class="nav-link">Servicios</a>
+            </li>
+
+
+            <li class="nav-item">
+              <a href="{% url 'signup' %}" class="nav-link">⇥</a>
+            </li>
+
+
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- CONTENIDO -->
+  <main class="flex-fill">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer-personalizado py-4">
+    <div class="container">
+      <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+
+        <!-- TRADICIÓN CRIOLLA -->
+        <div>
+          <h5 class="fw-bold">Tradición<br>Criolla</h5>
+        </div>
+
+        <!-- CONÓCENOS -->
+        <div>
+          <h5 class="fw-bold">Conócenos</h5>
+          <p>Email: contacto@tradicioncriolla.pe</p>
+          <p>Tel: +51 999 999 999</p>
+          <a href="#" class="text-light text-decoration-none d-block">Términos y condiciones</a>
+          <a href="#" class="text-light text-decoration-none d-block">Política de privacidad</a>
+        </div>
+
+        <!-- REDES SOCIALES -->
+        <div>
+          <h5 class="fw-bold">Redes sociales</h5>
+          <a href="#" class="text-light text-decoration-none d-block">Instagram</a>
+          <a href="#" class="text-light text-decoration-none d-block">Facebook</a>
+        </div>
+
+        <!-- MI CUENTA -->
+        <div>
+          <h5 class="fw-bold">Mi cuenta</h5>
+          <a href="#" class="text-light text-decoration-none d-block">Solicitar Pedido</a>
+          <a href="#" class="text-light text-decoration-none d-block">Iniciar Sesión</a>
+          <a href="/reclamos" class="d-block mt-2">
+            <img src="{% static 'recla.png' %}" alt="Libro de Reclamaciones" style="width: 80px;">
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
