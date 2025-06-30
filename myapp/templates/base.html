@@ -72,18 +72,37 @@
             </li>
 
 
-
-
-
-
             <li class="nav-item">
               <a href="{% url 'servicios' %}" class="nav-link">Servicios</a>
             </li>
 
 
-            <li class="nav-item">
-              <a href="{% url 'signup' %}" class="nav-link">⇥</a>
+            {% if user.is_authenticated %}
+            <!-- MENÚ PARA USUARIO AUTENTICADO CON NOMBRE -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle text-capitalize" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                {{ user.username }}
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" href="{% url 'mis_pedidos' %}">Mis pedidos</a></li>
+                <li><a class="dropdown-item" href="{% url 'logout' %}">Cerrar sesión</a></li>
+              </ul>
             </li>
+            {% else %}
+            <!-- MENÚ PARA INVITADO -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="guestDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                ⇥
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="guestDropdown">
+                <li><a class="dropdown-item" href="{% url 'signup' %}">Registrarse</a></li>
+                <li><a class="dropdown-item" href="{% url 'signin' %}">Iniciar sesión</a></li>
+              </ul>
+            </li>
+          {% endif %}
+
+
+
 
 
           </ul>

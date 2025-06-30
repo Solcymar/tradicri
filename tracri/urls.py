@@ -34,8 +34,8 @@ urlpatterns = [
     path('platos-especiales/', views.platos_especiales, name='platos_especiales'),
     path('combos/', views.combos, name='combos'),
     path('signin/', views.signin, name='signin'),
-    path('signup/', views.signup, name='signup')
-
-
+    path('signup/', views.signup, name='signup'),
+    path('logout/', views.cerrar_sesion, name='logout'),
+    path('mis-pedidos/', views.mis_pedidos, name='mis_pedidos'),
 ]
 

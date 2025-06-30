@@ -78,9 +78,13 @@ def signin(request):
 
 @login_required
 def cerrar_sesion(request):
-    logout(request)
+    if request.user.is_authenticated:
+        logout(request)
     return redirect('inicio')
 
+@login_required
+def mis_pedidos(request):
+    return redirect('mis_pedidos.html')
 
 
 
