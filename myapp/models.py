@@ -40,6 +40,7 @@ class CategoriaProducto(models.Model):
         return self.nombre
 
 
+
 class Producto(models.Model):
     nombre                 = models.CharField(max_length=100)
     categoria_inventario   = models.ForeignKey(CategoriaInventario,
@@ -58,6 +59,8 @@ class PlatoEspecial(models.Model):
     nombre      = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True, null=True)
     precio      = models.DecimalField(max_digits=10, decimal_places=2)
+    imagen = models.ImageField(upload_to='platos/', null=True, blank=True)
+
 
     def __str__(self):
         return self.nombre
@@ -78,15 +81,21 @@ class Combo(models.Model):
     nombre      = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True, null=True)
     precio      = models.DecimalField(max_digits=10, decimal_places=2)
+    imagen = models.ImageField(upload_to='combos/', null=True, blank=True)
+
 
     def __str__(self):
         return self.nombre
 
 
 class ComboPlato(models.Model):
-    combo     = models.ForeignKey(Combo, on_delete=models.CASCADE)
-    plato     = models.ForeignKey(PlatoEspecial, on_delete=models.CASCADE)
-    cantidad  = models.IntegerField()
+    combo = models.ForeignKey(Combo, related_name='comboplatos', on_delete=models.CASCADE)
+    platos = models.ManyToManyField(PlatoEspecial)
+    titulo_opcion = models.CharField(max_length=100, blank=True, null=True)
+    maximo_opciones = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f"{self.combo.nombre} - {self.titulo_opcion}"
 
 
 class ComboProducto(models.Model):
@@ -100,6 +109,7 @@ class Decoracion(models.Model):
     tema             = models.CharField(max_length=50, blank=True, null=True)
     precio_alquiler  = models.DecimalField(max_digits=10, decimal_places=2)
     stock_disponible = models.IntegerField(default=0)
+    imagen = models.ImageField(upload_to='decoraciones/', null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -117,6 +127,7 @@ class Pedido(models.Model):
         return f'Pedido #{self.pk} – {self.cliente}'
 
 
+
 class PedidoPlato(models.Model):
     pedido          = models.ForeignKey(Pedido, on_delete=models.CASCADE)
     plato           = models.ForeignKey(PlatoEspecial, on_delete=models.PROTECT)
@@ -129,6 +140,8 @@ class PedidoCombo(models.Model):
     combo           = models.ForeignKey(Combo, on_delete=models.PROTECT)
     cantidad        = models.IntegerField()
     precio_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    platos = models.ManyToManyField(PlatoEspecial, blank=True)
+
 
 
 class PedidoDecoracion(models.Model):

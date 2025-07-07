@@ -1,10 +1,110 @@
 {% extends 'base.html' %}
-{% block title %}Carta{% endblock %}
 {% load static %}
+
 {% block content %}
-<h2>Platos Especiales</h2>
+<div class="container py-5">
+    <nav class="mb-4">
+        <ul class="nav nav-pills justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link" href="#platos">Platos Especiales</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#combos">Combos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#decoraciones">Decoraciones</a>
+            </li>
+        </ul>
+    </nav>
 
-<h2>Productos</h2>
+    <!-- 🥘 Platos Especiales -->
+    <section id="platos">
+        <h2 class="text-center mb-4">Platos Especiales</h2>
+        <div class="row">
+            {% for plato in platos_especiales %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        {% if plato.imagen %}
+                            <img src="{{ plato.imagen.url }}" class="card-img-top" alt="{{ plato.nombre }}">
+                        {% else %}
+                            <img src="{% static 'img/no-image.png' %}" class="card-img-top" alt="Sin imagen">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ plato.nombre }}</h5>
+                            <p class="card-text">{{ plato.descripcion }}</p>
+                            <p class="card-text"><strong>Precio:</strong> S/. {{ plato.precio|floatformat:2 }}</p>
+                            <button class="btn btn-success agregar-carrito"
+                                    data-id="{{ plato.id }}"
+                                    data-tipo="plato"
+                                    data-nombre="{{ plato.nombre }}"
+                                    data-precio="{{ plato.precio }}">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
 
-<h2>Combos</h2>
+    <!-- 🍔 Combos -->
+    <section id="combos" class="mt-5">
+        <h2 class="text-center mb-4">Combos</h2>
+        <div class="row">
+            {% for combo in combos %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        {% if combo.imagen %}
+                            <img src="{{ combo.imagen.url }}" class="card-img-top" alt="{{ combo.nombre }}">
+                        {% else %}
+                            <img src="{% static 'img/no-image.png' %}" class="card-img-top" alt="Sin imagen">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ combo.nombre }}</h5>
+                            <p class="card-text">{{ combo.descripcion }}</p>
+                            <p class="card-text"><strong>Precio:</strong> S/. {{ combo.precio|floatformat:2 }}</p>
+                            <button class="btn btn-success agregar-carrito"
+                                    data-id="{{ combo.id }}"
+                                    data-tipo="combo"
+                                    data-nombre="{{ combo.nombre }}"
+                                    data-precio="{{ combo.precio }}">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- 🎈 Decoraciones -->
+    <section id="decoraciones" class="mt-5">
+        <h2 class="text-center mb-4">Decoraciones</h2>
+        <div class="row">
+            {% for decoracion in decoraciones %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        {% if decoracion.imagen %}
+                            <img src="{{ decoracion.imagen.url }}" class="card-img-top" alt="{{ decoracion.nombre }}">
+                        {% else %}
+                            <img src="{% static 'img/no-image.png' %}" class="card-img-top" alt="Sin imagen">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ decoracion.nombre }}</h5>
+                            <p class="card-text">{{ decoracion.tema }}</p>
+                            <p class="card-text"><strong>Precio alquiler:</strong> S/. {{ decoracion.precio_alquiler|floatformat:2 }}</p>
+                            <button class="btn btn-success agregar-carrito"
+                                    data-id="{{ decoracion.id }}"
+                                    data-tipo="decoracion"
+                                    data-nombre="{{ decoracion.nombre }}"
+                                    data-precio="{{ decoracion.precio_alquiler }}">
+                                +
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
 {% endblock %}

@@ -1,8 +1,51 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-<div class="container py-5">
-    <h2 class="text-center">Mis compras</h2>
-    <p class="mt-4">...</p>
+<div class="container my-5">
+  <h2 class="mb-4">Mis Pedidos</h2>
+
+  {% if pedidos_con_items %}
+    <div class="list-group">
+      {% for p in pedidos_con_items %}
+        <div class="list-group-item mb-3">
+          <h5>Pedido #{{ p.pedido.id }}</h5>
+          <p>Estado: {{ p.pedido.get_estado_display }}</p>
+          <p>Fecha: {{ p.pedido.fecha_pedido }}</p>
+
+          {% if p.platos %}
+            <h6>Platos:</h6>
+            <ul>
+              {% for item in p.platos %}
+                <li>{{ item.plato.nombre }} x{{ item.cantidad }} - S/. {{ item.precio_unitario }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+          {% if p.combos %}
+            <h6>Combos:</h6>
+            <ul>
+              {% for item in p.combos %}
+                <li>{{ item.combo.nombre }} x{{ item.cantidad }} - S/. {{ item.precio_unitario }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+          {% if p.decoraciones %}
+            <h6>Decoraciones:</h6>
+            <ul>
+              {% for item in p.decoraciones %}
+                <li>{{ item.decoracion.nombre }} x{{ item.cantidad }} - S/. {{ item.precio_unitario }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+
+          <strong>Total: S/. {{ p.total }}</strong>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>No has realizado pedidos aún.</p>
+  {% endif %}
 </div>
 {% endblock %}
+

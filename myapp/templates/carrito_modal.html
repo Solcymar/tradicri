@@ -1,0 +1,25 @@
+<!-- Modal del carrito -->
+<div id="modalCarrito" class="modal fade" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content p-4">
+      <div class="modal-header">
+        <h5 class="modal-title">Tu Pedido</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <div id="lista-pedidos">
+          <!-- Los pedidos se llenarán vía JavaScript -->
+        </div>
+        <hr>
+        <p class="fw-bold">Total: S/. <span id="total-carrito">0.00</span></p>
+      </div>
+      <div class="modal-footer">
+        <form method="post" action="{% url 'confirmar_pedido' %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-success">Continuar compra</button>
+        </form>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Seguir comprando</button>
+      </div>
+    </div>
+  </div>
+</div>
