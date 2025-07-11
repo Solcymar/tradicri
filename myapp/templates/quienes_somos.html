@@ -1,10 +1,138 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<div class="fondo-somos">
-    <div class="container py-5">
-        <h2 class="text-center">¿Quiénes somos?</h2>
-        <p class="mt-4">Somos Tradición Criolla, un equipo apasionado por llevar lo mejor de la cocina peruana a tus eventos especiales...</p>
+<body>
+    <div class="fondo-somos">
+        <div class="container">
+            <h1 class="titulo-principal">¿Quiénes Somos?</h1>
+            
+            <div class="contenido-somos">
+                <div class="texto-somos">
+                    <p>Somos Tradición Criolla, un equipo apasionado por llevar lo mejor de la cocina peruana a tus eventos especiales. Con más de 15 años de experiencia, hemos perfeccionado el arte de fusionar sabores ancestrales con presentaciones contemporáneas que cautivan todos los sentidos.</p>
+                    
+                    <p>Nuestra historia comenzó en un pequeño mercado de Lima, donde nuestra fundadora, María Fernández, compartía sus recetas familiares con los vecinos. Lo que empezó como un modesto puesto de comida se transformó en un referente de la gastronomía peruana, reconocido por nuestra autenticidad y excelencia culinaria.</p>
+                    
+                    <div class="mision-vision">
+                        <div class="tarjeta-mv">
+                            <h3><i class="fas fa-bullseye"></i> Nuestra Misión</h3>
+                            <p>Preservar y compartir la riqueza culinaria del Perú a través de experiencias gastronómicas memorables, utilizando ingredientes frescos y técnicas tradicionales con un toque innovador.</p>
+                        </div>
+                        
+                        <div class="tarjeta-mv">
+                            <h3><i class="fas fa-eye"></i> Nuestra Visión</h3>
+                            <p>Ser embajadores de la cocina peruana en el mundo, creando momentos inolvidables alrededor de la mesa donde cada platillo cuente una historia de nuestra cultura milenaria.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="imagen-somos">
+                <img src="{% static 'mesas.jpeg' %}" alt="Cocina tradicional peruana">
+                </div>
+
+            </div>
+            
+
+            <h2 class="equipo-titulo">Nuestro Equipo</h2>
+            
+            <div class="miembros-equipo">
+                <div class="miembro">
+                    <div class="foto-miembro">
+                        <img src="https://images.unsplash.com/photo-1583394293214-28ded15ee548?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="María Fernández">
+                    </div>
+                    <div class="info-miembro">
+                        <h3>María Fernández</h3>
+                        <p>Fundadora & Chef Ejecutiva</p>
+                        <div class="redes-sociales">
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="miembro">
+                    <div class="foto-miembro">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Carlos Mendoza">
+                    </div>
+                    <div class="info-miembro">
+                        <h3>Carlos Mendoza</h3>
+                        <p>Chef Especialista en Mariscos</p>
+                        <div class="redes-sociales">
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="miembro">
+                    <div class="foto-miembro">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Lucía Huamán">
+                    </div>
+                    <div class="info-miembro">
+                        <h3>Lucía Huamán</h3>
+                        <p>Especialista en Postres Tradicionales</p>
+                        <div class="redes-sociales">
+                            <a href="#"><i class="fab fa-instagram"></i></a>
+                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="valores-container">
+                <h2 class="equipo-titulo">Nuestros Valores</h2>
+                
+                <div class="valores-grid">
+                    <div class="valor-item">
+                        <div class="valor-icono">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <h3>Autenticidad</h3>
+                        <p>Recetas tradicionales que honran nuestra herencia culinaria</p>
+                    </div>
+                    
+                    <div class="valor-item">
+                        <div class="valor-icono">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3>Pasión</h3>
+                        <p>Cada plato se prepara con dedicación y amor por la cocina</p>
+                    </div>
+                    
+                    <div class="valor-item">
+                        <div class="valor-icono">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h3>Excelencia</h3>
+                        <p>Buscamos la perfección en cada detalle de nuestro servicio</p>
+                    </div>
+                    
+                    <div class="valor-item">
+                        <div class="valor-icono">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h3>Compromiso</h3>
+                        <p>Cumplimos con nuestras promesas y superamos expectativas</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
+    
+    <script src="quienes_somos.js"></script>
+</body>
+
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

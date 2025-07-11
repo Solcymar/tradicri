@@ -16,6 +16,8 @@ from datetime import datetime
 from django.views.decorators.http import require_GET
 from django.http import JsonResponse, HttpResponseBadRequest
 import json
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
 
 from .forms import CustomUserCreationForm
 from .models import (
@@ -56,10 +58,17 @@ def signup(request):
             'error': 'Las contraseñas no coinciden o los datos no son válidos'
         })
 
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import render, redirect
+from django.utils import timezone
+from .models import Cliente, Pedido, PedidoEstado, PlatoEspecial, Combo, Decoracion, PedidoPlato, PedidoCombo, PedidoDecoracion
+
 def signin(request):
     if request.method == 'GET':
         return render(request, 'signin.html', {'form': AuthenticationForm()})
 
+    # Autenticación del usuario
     user = authenticate(
         request,
         username=request.POST['username'],
@@ -70,8 +79,64 @@ def signin(request):
             'form': AuthenticationForm(),
             'error': 'Usuario o contraseña incorrectos'
         })
+
+    # Login exitoso
     login(request, user)
+
+    # ✅ TRANSFERENCIA DEL CARRITO DE LA SESIÓN A LA BASE DE DATOS
+    carrito = request.session.get('carrito', [])
+    if carrito:
+        cliente, _ = Cliente.objects.get_or_create(
+            email=user.email,
+            defaults={'nombre': user.username}
+        )
+
+        pedido, _ = Pedido.objects.get_or_create(
+            cliente=cliente,
+            estado=PedidoEstado.PENDIENTE,
+            defaults={'fecha_evento': timezone.now().date()}
+        )
+
+        for item in carrito:
+            tipo = item.get('tipo')
+            item_id = item.get('id')
+            cantidad = item.get('cantidad', 1)
+
+            try:
+                if tipo == 'plato':
+                    plato = PlatoEspecial.objects.get(pk=item_id)
+                    PedidoPlato.objects.create(
+                        pedido=pedido,
+                        plato=plato,
+                        cantidad=cantidad,
+                        precio_unitario=plato.precio
+                    )
+                elif tipo == 'combo':
+                    combo = Combo.objects.get(pk=item_id)
+                    PedidoCombo.objects.create(
+                        pedido=pedido,
+                        combo=combo,
+                        cantidad=cantidad,
+                        precio_unitario=combo.precio
+                    )
+                elif tipo == 'decoracion':
+                    decoracion = Decoracion.objects.get(pk=item_id)
+                    PedidoDecoracion.objects.create(
+                        pedido=pedido,
+                        decoracion=decoracion,
+                        cantidad=cantidad,
+                        precio_unitario=decoracion.precio_alquiler
+                    )
+            except:
+                continue  # Si algún objeto fue eliminado o no existe, lo ignoramos
+
+        # Limpia el carrito de la sesión
+        del request.session['carrito']
+        request.session.modified = True
+
+    # Redirigir al inicio después del login
     return redirect('inicio')
+
 
 @login_required
 def cerrar_sesion(request):
@@ -101,61 +166,83 @@ def faq(request):
     return render(request, 'faq.html')
 
 
-@require_POST
-@login_required
+
 def agregar_al_carrito(request):
     tipo = request.POST.get('tipo')
     item_id = request.POST.get('id')
     cantidad = int(request.POST.get('cantidad', 1))
 
-    cliente, _ = Cliente.objects.get_or_create(
-        email=request.user.email,
-        defaults={'nombre': request.user.username}
-    )
+    # Validar tipo
+    if tipo not in ['combo', 'plato', 'decoracion']:
+        return JsonResponse({'error': 'Tipo inválido'}, status=400)
 
-    pedido, _ = Pedido.objects.get_or_create(
-        cliente=cliente,
-        estado=PedidoEstado.PENDIENTE,
-        defaults={'fecha_evento': timezone.now().date()}
-    )
+    if request.user.is_authenticated:
+        # Cliente autenticado → guarda en BD
+        cliente, _ = Cliente.objects.get_or_create(
+            email=request.user.email,
+            defaults={'nombre': request.user.username}
+        )
 
-    if tipo == 'combo':
-        try:
-            combo = Combo.objects.get(pk=item_id)
-            PedidoCombo.objects.create(
-                pedido=pedido,
-                combo=combo,
-                cantidad=cantidad,
-                precio_unitario=combo.precio
-            )
-        except Combo.DoesNotExist:
-            return JsonResponse({'error': 'Combo no existe'}, status=400)
+        pedido, _ = Pedido.objects.get_or_create(
+            cliente=cliente,
+            estado=PedidoEstado.PENDIENTE,
+            defaults={'fecha_evento': timezone.now().date()}
+        )
 
-    elif tipo == 'plato':
-        try:
-            plato = PlatoEspecial.objects.get(pk=item_id)
-            PedidoPlato.objects.create(
-                pedido=pedido,
-                plato=plato,
-                cantidad=cantidad,
-                precio_unitario=plato.precio
-            )
-        except PlatoEspecial.DoesNotExist:
-            return JsonResponse({'error': 'Plato no existe'}, status=400)
+        if tipo == 'combo':
+            try:
+                combo = Combo.objects.get(pk=item_id)
+                PedidoCombo.objects.create(
+                    pedido=pedido,
+                    combo=combo,
+                    cantidad=cantidad,
+                    precio_unitario=combo.precio
+                )
+            except Combo.DoesNotExist:
+                return JsonResponse({'error': 'Combo no existe'}, status=400)
 
-    elif tipo == 'decoracion':
-        try:
-            decoracion = Decoracion.objects.get(pk=item_id)
-            PedidoDecoracion.objects.create(
-                pedido=pedido,
-                decoracion=decoracion,
-                cantidad=cantidad,
-                precio_unitario=decoracion.precio_alquiler
-            )
-        except Decoracion.DoesNotExist:
-            return JsonResponse({'error': 'Decoracion no existe'}, status=400)
+        elif tipo == 'plato':
+            try:
+                plato = PlatoEspecial.objects.get(pk=item_id)
+                PedidoPlato.objects.create(
+                    pedido=pedido,
+                    plato=plato,
+                    cantidad=cantidad,
+                    precio_unitario=plato.precio
+                )
+            except PlatoEspecial.DoesNotExist:
+                return JsonResponse({'error': 'Plato no existe'}, status=400)
 
-    return JsonResponse({'success': True})
+        elif tipo == 'decoracion':
+            try:
+                decoracion = Decoracion.objects.get(pk=item_id)
+                PedidoDecoracion.objects.create(
+                    pedido=pedido,
+                    decoracion=decoracion,
+                    cantidad=cantidad,
+                    precio_unitario=decoracion.precio_alquiler
+                )
+            except Decoracion.DoesNotExist:
+                return JsonResponse({'error': 'Decoración no existe'}, status=400)
+
+        return JsonResponse({'success': True})
+
+    else:
+        # Cliente NO autenticado → usa sesión como carrito temporal
+        carrito = request.session.get('carrito', [])
+
+        # Agregamos el nuevo ítem al carrito
+        carrito.append({
+            'tipo': tipo,
+            'id': item_id,
+            'cantidad': cantidad
+        })
+
+        # Guardamos el carrito actualizado en la sesión
+        request.session['carrito'] = carrito
+        request.session.modified = True
+
+        return JsonResponse({'success': True, 'carrito_size': len(carrito)})
 
 
 
@@ -202,66 +289,137 @@ def mis_pedidos(request):
     return render(request, 'mis_pedidos.html', {'pedidos_con_items': pedidos_con_items})
 
 
-
-@require_GET
-@login_required
 def ver_carrito_ajax(request):
-    cliente = Cliente.objects.filter(email=request.user.email).first()
-    pedido = Pedido.objects.filter(cliente=cliente, estado=PedidoEstado.PENDIENTE).first()
-
     pedidos = []
-    if pedido:
-        pedidos += [
-            {
-                'tipo': 'plato',
-                'nombre': pp.plato.nombre,
-                'cantidad': pp.cantidad,
-                'precio_unitario': float(pp.precio_unitario),
-            } for pp in pedido.pedidoplato_set.all()
-        ]
-        pedidos += [
-            {
-                'tipo': 'combo',
-                'nombre': pc.combo.nombre,
-                'cantidad': pc.cantidad,
-                'precio_unitario': float(pc.precio_unitario),
-            } for pc in pedido.pedidocombo_set.all()
-        ]
-        pedidos += [
-            {
-                'tipo': 'decoracion',
-                'nombre': pd.decoracion.nombre,
-                'cantidad': pd.cantidad,
-                'precio_unitario': float(pd.precio_unitario),
-            } for pd in pedido.pedidodecoracion_set.all()
-        ]
+
+    if request.user.is_authenticated:
+        cliente = Cliente.objects.filter(email=request.user.email).first()
+        pedido = Pedido.objects.filter(cliente=cliente, estado=PedidoEstado.PENDIENTE).first()
+
+        if pedido:
+            pedidos += [
+                {
+                    'tipo': 'plato',
+                    'nombre': pp.plato.nombre,
+                    'cantidad': pp.cantidad,
+                    'precio_unitario': float(pp.precio_unitario),
+                } for pp in pedido.pedidoplato_set.all()
+            ]
+            pedidos += [
+                {
+                    'tipo': 'combo',
+                    'nombre': pc.combo.nombre,
+                    'cantidad': pc.cantidad,
+                    'precio_unitario': float(pc.precio_unitario),
+                } for pc in pedido.pedidocombo_set.all()
+            ]
+            pedidos += [
+                {
+                    'tipo': 'decoracion',
+                    'nombre': pd.decoracion.nombre,
+                    'cantidad': pd.cantidad,
+                    'precio_unitario': float(pd.precio_unitario),
+                } for pd in pedido.pedidodecoracion_set.all()
+            ]
+    else:
+        carrito = request.session.get('carrito', [])
+
+        for item in carrito:
+            tipo = item.get('tipo')
+            item_id = item.get('id')
+            cantidad = item.get('cantidad', 1)
+
+            try:
+                if tipo == 'plato':
+                    plato = PlatoEspecial.objects.get(pk=item_id)
+                    pedidos.append({
+                        'tipo': 'plato',
+                        'nombre': plato.nombre,
+                        'cantidad': cantidad,
+                        'precio_unitario': float(plato.precio),
+                    })
+                elif tipo == 'combo':
+                    combo = Combo.objects.get(pk=item_id)
+                    pedidos.append({
+                        'tipo': 'combo',
+                        'nombre': combo.nombre,
+                        'cantidad': cantidad,
+                        'precio_unitario': float(combo.precio),
+                    })
+                elif tipo == 'decoracion':
+                    decoracion = Decoracion.objects.get(pk=item_id)
+                    pedidos.append({
+                        'tipo': 'decoracion',
+                        'nombre': decoracion.nombre,
+                        'cantidad': cantidad,
+                        'precio_unitario': float(decoracion.precio_alquiler),
+                    })
+            except (PlatoEspecial.DoesNotExist, Combo.DoesNotExist, Decoracion.DoesNotExist):
+                continue  # Si el producto fue eliminado de la BD, lo ignoramos
 
     return JsonResponse({'pedidos': pedidos})
 
 
-@require_POST
-@login_required
+
 def quitar_del_carrito(request):
     tipo = request.POST.get('tipo')
     nombre = request.POST.get('nombre')
 
-    cliente = Cliente.objects.filter(email=request.user.email).first()
-    pedido = Pedido.objects.filter(cliente=cliente, estado=PedidoEstado.PENDIENTE).first()
+    if tipo not in ['plato', 'combo', 'decoracion']:
+        return JsonResponse({'success': False, 'error': 'Tipo inválido'})
 
-    if not pedido:
-        return JsonResponse({'success': False, 'error': 'No hay pedido'})
+    if request.user.is_authenticated:
+        # Usuario logueado: elimina desde base de datos
+        cliente = Cliente.objects.filter(email=request.user.email).first()
+        pedido = Pedido.objects.filter(cliente=cliente, estado=PedidoEstado.PENDIENTE).first()
 
-    try:
-        if tipo == 'plato':
-            item = pedido.pedidoplato_set.get(plato__nombre=nombre)
-        elif tipo == 'combo':
-            item = pedido.pedidocombo_set.get(combo__nombre=nombre)
-        elif tipo == 'decoracion':
-            item = pedido.pedidodecoracion_set.get(decoracion__nombre=nombre)
+        if not pedido:
+            return JsonResponse({'success': False, 'error': 'No hay pedido'})
+
+        try:
+            if tipo == 'plato':
+                item = pedido.pedidoplato_set.get(plato__nombre=nombre)
+            elif tipo == 'combo':
+                item = pedido.pedidocombo_set.get(combo__nombre=nombre)
+            elif tipo == 'decoracion':
+                item = pedido.pedidodecoracion_set.get(decoracion__nombre=nombre)
+
+            item.delete()
+            return JsonResponse({'success': True})
+        except:
+            return JsonResponse({'success': False, 'error': 'No se pudo eliminar'})
+
+    else:
+        # Usuario NO logueado: elimina desde la sesión
+        carrito = request.session.get('carrito', [])
+
+        nuevo_carrito = []
+        eliminado = False
+
+        for item in carrito:
+            if item['tipo'] == tipo:
+                try:
+                    from .models import PlatoEspecial, Combo, Decoracion
+                    if tipo == 'plato':
+                        obj = PlatoEspecial.objects.get(pk=item['id'])
+                    elif tipo == 'combo':
+                        obj = Combo.objects.get(pk=item['id'])
+                    elif tipo == 'decoracion':
+                        obj = Decoracion.objects.get(pk=item['id'])
+
+                    if obj.nombre != nombre:
+                        nuevo_carrito.append(item)
+                    else:
+                        eliminado = True
+                except:
+                    nuevo_carrito.append(item)
+            else:
+                nuevo_carrito.append(item)
+
+        request.session['carrito'] = nuevo_carrito
+        request.session.modified = True
+
+        if eliminado:
+            return JsonResponse({'success': True})
         else:
-            return JsonResponse({'success': False, 'error': 'Tipo inválido'})
-
-        item.delete()
-        return JsonResponse({'success': True})
-    except:
-        return JsonResponse({'success': False, 'error': 'No se pudo eliminar'})
+            return JsonResponse({'success': False, 'error': 'Ítem no encontrado'})
